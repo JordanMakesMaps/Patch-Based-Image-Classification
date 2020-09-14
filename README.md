@@ -5,7 +5,7 @@ This custom architecture learns class categories at multiple scales and adopts t
 
 ![](Paper_Figures/MDNet_Arch.PNG)
 
-# Code
+## Code
 ```python
 #...
 
