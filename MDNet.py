@@ -1,16 +1,15 @@
+import warnings
+warnings.filterwarnings('ignore')
+
 from keras.models import Model
 from keras.layers.core import Dense, Dropout, Activation
 from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import AveragePooling2D
 from keras.layers.pooling import GlobalAveragePooling2D
-from keras.layers import Input, merge, Cropping2D 
+from keras.layers import Input, merge, Concatenate, Cropping2D 
 from keras.layers.normalization import BatchNormalization
 from keras.regularizers import l2
 import keras.backend as K
-
-'''
-Based on the implementation here : https://github.com/Lasagne/Recipes/blob/master/papers/densenet/densenet_fast.py
-'''
 
 def dense_layer(ip, nb_filter, dropout_rate=None, weight_decay=1E-4):
     ''' Apply BatchNorm, Relu 3x3, Conv2D, optional dropout
@@ -22,13 +21,7 @@ def dense_layer(ip, nb_filter, dropout_rate=None, weight_decay=1E-4):
     Returns: keras tensor with batch_norm, relu and convolution2d added
     '''
 
-    concat_axis = 1 if K.image_dim_ordering() == "th" else -1
-
-    x = BatchNormalization(mode=0, axis=concat_axis, gamma_regularizer=l2(weight_decay),
-                           beta_regularizer=l2(weight_decay))(x)
-
     x = Activation('relu')(ip)
-    
     x = Convolution2D(nb_filter, 3, 3, init="he_uniform", border_mode="same", bias=False,
                       W_regularizer=l2(weight_decay))(x)
     if dropout_rate:
@@ -78,15 +71,14 @@ def dense_block(x, nb_layers, nb_filter, growth_rate, dropout_rate=None, weight_
     for i in range(nb_layers):
         x = dense_layer(x, growth_rate, dropout_rate, weight_decay)
         feature_list.append(x)
-        x = merge(feature_list, mode='concat', concat_axis=concat_axis)
+        x = merge(feature_list, mode='concat', concat_axis = concat_axis)
         nb_filter += growth_rate
 
     return x, nb_filter
 
 
-
-def create_MDNet(nb_classes, img_dim, depth=3, nb_dense_block=3, growth_rate=12, nb_filter=16, dropout_rate=None,
-                     weight_decay=1E-4, nb_pipelines = 4, decrease_dim_by = .25,  verbose=True):
+def create_MDNet(nb_classes, img_dim, nb_dense_block = 3, nb_pipelines = 4, growth_rate=12, nb_filter=16, 
+                 dropout_rate = .5, weight_decay=1E-4, decrease_by = .25):
     ''' Build the create_dense_net model
     Args:
         nb_classes: number of classes
@@ -97,37 +89,39 @@ def create_MDNet(nb_classes, img_dim, depth=3, nb_dense_block=3, growth_rate=12,
         nb_filter: number of filters
         dropout_rate: dropout rate
         weight_decay: weight decay
-        nb_pipelines: number of seperate pipes for differing image dims
-        decrease_dim_by: percentage to crop by, symmetrical height and width
+        crop_by: percentage to crop by, symmetrical height and width
     Returns: keras tensor with nb_layers of dense_layer appended
     '''
     
+    # House keeping
+    assert img_dim[0] == img_dim[1]
     concat_axis = 1 if K.image_dim_ordering() == "th" else -1
-    assert (depth - 4) % 3 == 0, "Depth must be 3 N + 4"
-
-    # layers in each dense block
+    
+    
+    depth = 4
     nb_layers = int((depth - 4) / 3)
 
     pipelines = []
 
     # Model building
-    model_input = Input(shape=img_dim)
+    model_input = Input(shape = img_dim)
 
     for pipeline_idx in range(nb_pipelines):
 
-        # Add 2D cropping layer, assumes img_dim is symmetrical
-        new_shape = int(img_dim.shape[1] * (pipeline_idx * decrease_dim_by)) if pipeline_idx != 0 else img_dim.shape[1]
-        pipeline_input = Cropping2D(cropping = (new_shape))(model_input)
+        new_dim = int(img_dim[0] * (pipeline_idx * decrease_by)) if pipeline_idx != 0 else img_dim[0]
+        crop_by = int(new_dim/2) if pipeline_idx != 0 else 0
+
+        pipeline_input = Cropping2D(cropping = crop_by)(model_input)
 
         # Initial convolution
-        x = Convolution2D(nb_filter, 3, 3, init="he_uniform", border_mode="same", name="initial_conv2D", bias=False,
-                          W_regularizer=l2(weight_decay))(pipeline_input)
+        x = Convolution2D(nb_filter, 3, 3, init="he_uniform", border_mode="same", name="initial_conv2D_" + str(pipeline_idx), 
+                          bias=False, W_regularizer=l2(weight_decay))(pipeline_input)
 
         x = BatchNormalization(mode=0, axis=concat_axis, gamma_regularizer=l2(weight_decay),
                                 beta_regularizer=l2(weight_decay))(x)
 
         # Add dense blocks
-        for block_idx in range(nb_dense_block - 1):
+        for block_idx in range(nb_dense_block):
             x, nb_filter = dense_block(x, nb_layers, nb_filter, growth_rate, dropout_rate=dropout_rate,
                                        weight_decay=weight_decay)
             # add transition_layer
@@ -136,15 +130,16 @@ def create_MDNet(nb_classes, img_dim, depth=3, nb_dense_block=3, growth_rate=12,
         # The last dense_block does not have a transition_layer
         x, nb_filter = dense_block(x, nb_layers, nb_filter, growth_rate, dropout_rate=dropout_rate,
                                    weight_decay=weight_decay)
+        
+        x = GlobalAveragePooling2D()(x)
 
         pipelines.append(x)
 
 
     # Merge pipelines
-    x = merge(pipelines, mode='concat', concat_axis=concat_axis)
-
-    x = Activation('relu')(x)
-    x = GlobalAveragePooling2D()(x)
+    if(nb_pipelines > 1):
+        x = Concatenate(axis = -1)(pipelines)
+    
     x = Dropout(dropout_rate)(x)
 
     # Two fully connected layers
@@ -161,7 +156,5 @@ def create_MDNet(nb_classes, img_dim, depth=3, nb_dense_block=3, growth_rate=12,
     x = Dense(nb_classes, activation='softmax', W_regularizer=l2(weight_decay), b_regularizer=l2(weight_decay))(x)
 
     MDNet = Model(input = model_input, output = x, name = "MDNet")
-
-    if verbose: print("MDNet-%d-%d created." % (depth, growth_rate))
 
     return MDNet
