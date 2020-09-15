@@ -21,13 +21,18 @@ def dense_layer(ip, nb_filter, dropout_rate=None, weight_decay=1E-4):
     Returns: keras tensor with batch_norm, relu and convolution2d added
     '''
 
-    x = Activation('relu')(ip)
-    x = Convolution2D(nb_filter, 3, 3, init="he_uniform", border_mode="same", bias=False,
-                      W_regularizer=l2(weight_decay))(x)
+    concat_axis = 1 if K.image_dim_ordering() == "th" else -1
+
+    x = BatchNormalization(mode=0, axis=concat_axis, gamma_regularizer=l2(weight_decay), beta_regularizer=l2(weight_decay))(ip)
+   
+    x = Activation('relu')(x)
+    
+    x = Convolution2D(nb_filter, 3, 3, init="he_uniform", border_mode="same", bias=False, W_regularizer=l2(weight_decay))(x)
     if dropout_rate:
         x = Dropout(dropout_rate)(x)
 
     return x
+
 
 
 def transition_layer(ip, nb_filter, dropout_rate=None, weight_decay=1E-4):
@@ -42,14 +47,14 @@ def transition_layer(ip, nb_filter, dropout_rate=None, weight_decay=1E-4):
 
     concat_axis = 1 if K.image_dim_ordering() == "th" else -1
 
-    x = Convolution2D(nb_filter, 1, 1, init="he_uniform", border_mode="same", bias=False,
-                      W_regularizer=l2(weight_decay))(ip)
+    x = Convolution2D(nb_filter, 1, 1, init="he_uniform", border_mode="same", bias=False, W_regularizer=l2(weight_decay))(ip)
     if dropout_rate:
         x = Dropout(dropout_rate)(x)
 
     x = AveragePooling2D((2, 2), strides=(2, 2))(x)
 
     return x
+
 
 
 def dense_block(x, nb_layers, nb_filter, growth_rate, dropout_rate=None, weight_decay=1E-4):
@@ -69,22 +74,24 @@ def dense_block(x, nb_layers, nb_filter, growth_rate, dropout_rate=None, weight_
     feature_list = [x]
 
     for i in range(nb_layers):
+        print("   Layer ID:", i)
         x = dense_layer(x, growth_rate, dropout_rate, weight_decay)
         feature_list.append(x)
-        x = merge(feature_list, mode='concat', concat_axis = concat_axis)
-        nb_filter += growth_rate
+        
+        x = Concatenate(axis = -1)(feature_list)
 
     return x, nb_filter
 
 
-def create_MDNet(nb_classes, img_dim, nb_dense_block = 3, nb_pipelines = 4, growth_rate=12, nb_filter=16, 
+
+def create_MDNet(nb_classes, img_dim, nb_layers = 5, nb_dense_block = 3, nb_pipelines = 4, growth_rate=12, nb_filter=16, 
                  dropout_rate = .5, weight_decay=1E-4, decrease_by = .25):
     ''' Build the create_dense_net model
     Args:
         nb_classes: number of classes
         img_dim: tuple of shape (channels, rows, columns) or (rows, columns, channels)
-        depth: number or layers
-        nb_dense_block: number of dense blocks to add to end
+        nb_layers: number or layers in each block
+        nb_dense_block: number of dense blocks to add, total
         growth_rate: number of filters to add
         nb_filter: number of filters
         dropout_rate: dropout rate
@@ -98,35 +105,35 @@ def create_MDNet(nb_classes, img_dim, nb_dense_block = 3, nb_pipelines = 4, grow
     concat_axis = 1 if K.image_dim_ordering() == "th" else -1
     
     
-    depth = 4
-    nb_layers = int((depth - 4) / 3)
-
     pipelines = []
 
     # Model building
     model_input = Input(shape = img_dim)
 
     for pipeline_idx in range(nb_pipelines):
+        
+        print("\nPipeline ID:", pipeline_idx)
 
         new_dim = int(img_dim[0] * (pipeline_idx * decrease_by)) if pipeline_idx != 0 else img_dim[0]
         crop_by = int(new_dim/2) if pipeline_idx != 0 else 0
 
         pipeline_input = Cropping2D(cropping = crop_by)(model_input)
 
-        # Initial convolution
-        x = Convolution2D(nb_filter, 3, 3, init="he_uniform", border_mode="same", name="initial_conv2D_" + str(pipeline_idx), 
-                          bias=False, W_regularizer=l2(weight_decay))(pipeline_input)
-
-        x = BatchNormalization(mode=0, axis=concat_axis, gamma_regularizer=l2(weight_decay),
-                                beta_regularizer=l2(weight_decay))(x)
+        x = Convolution2D(nb_filter, 1, 1, init="he_uniform", border_mode="same", bias=False,
+                          W_regularizer=l2(weight_decay))(pipeline_input)
 
         # Add dense blocks
-        for block_idx in range(nb_dense_block):
+        for block_idx in range(nb_dense_block - 1):
+            
+            print("Block ID:", block_idx)
+            
             x, nb_filter = dense_block(x, nb_layers, nb_filter, growth_rate, dropout_rate=dropout_rate,
                                        weight_decay=weight_decay)
             # add transition_layer
             x = transition_layer(x, nb_filter, dropout_rate=dropout_rate, weight_decay=weight_decay)
 
+        
+        print("Block ID: tail block")
         # The last dense_block does not have a transition_layer
         x, nb_filter = dense_block(x, nb_layers, nb_filter, growth_rate, dropout_rate=dropout_rate,
                                    weight_decay=weight_decay)
