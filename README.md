@@ -7,6 +7,10 @@ This custom architecture learns class categories at multiple scales and adopts t
 
 ## Code
 ```python
-#...
+from MDNet import *
+
+n_classes = 9
+
+model = create_MDNet(nb_classes = n_classes, img_dim = (112, 112, 3), nb_block = 3, nb_pipelines = 4, decrease_by = .25)
 
 ```
