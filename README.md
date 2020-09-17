@@ -13,9 +13,12 @@ n_classes = 9
 
 model = create_MDNet(nb_classes = n_classes, 
                      img_dim = (112, 112, 3), 
+                     num_layers = 5,
                      nb_block = 3, 
                      nb_pipelines = 4, 
                      decrease_by = .25)
+                     
+model.compile()
 
 ```
 
