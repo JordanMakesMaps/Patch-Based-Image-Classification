@@ -1,25 +1,9 @@
-# Patch-Based Image Classification for the Moorea Labeled Coral Dataset
-A Keras implmentation of the MDNet, published in the 2018 paper titled, ["Multi-Patch Dense Network for Coral Classification"](https://afrl.cse.sc.edu/afrl/publications/public_html/papers/ModasshirOceans2018.pdf). The network was originally designed for the purpose of coral reef patch-based image classification, and currently is the state-of-the-art for the Moorea Labeled Coral (MLC) dataset, originally published by Beijbom et al. 2012.
+# Patch-Based Image Classification for the Moorea Labeled Coral (MLC) Dataset
 
-This custom architecture learns class categories at multiple scales and adopts the use of densely connected convolutional layers to reduce overfitting. MDNet extracts features from image-patches of different sizes in parallel, later concatenating them together to create a final descriptor for each annotated point. This technique allows for training  end-to-end, learning information at different scales without having to perform costly resizing operations on each patch as done in previous works.
-
-![](Paper_Figures/MDNet_Figure.PNG)
-
-## Code
-```python
-from MDNet import *
-
-n_classes = 9
-
-model = build_MDNet(9, (112, 112, 3),
-                    num_pipelines = 4,
-                    num_blocks = 3,
-                    num_layers = 5, 
-                    num_filters = 12,
-                    dropout_rate = .75,
-                    decrease_by = .25)
-                     
-model.compile()
-
-```
-
+    In 2012, Beijbom et al. published the MLC dataset to serve as the first large-scale benchmark to gauge the progress of algorithms that perform coral reef image classification. The dataset is comprised of 2,055 images taken of the same sites across three years (2008-2010) with approximately 400,000 manually annotated labels. Outlined with it are three patch-based image classification experiments that use the nine most abundant class categories to test an algorithm’s ability to generalize across time. They set the baseline classification scores for each of the three experiments by using handcrafted feature descriptors that account for both color and texture by using a Maximum Response (MR) filter bank with the Bag of Visual Words (BoVW) algorithm.
+    
+    In 2015, Mahmood et al. surpassed the results published in Beijbom et al. 2012 by using features extracted from the VGGNet using only the pre-trained weights learned from the ImageNet dataset. They incorporated information at multiple scales by using what they termed the ‘Local-Spatial Pyramid Pooling’ technique, which extracted multiple patches of different sizes all centered on the same annotated point, later combining them into a single feature descriptor using a max pooling operation. 
+    
+    The current state-of-the-art for patch-based image classification was created in 2018 by Modasshir et al. They used a custom CNN called the Multipatch Dense Network (MDNet), which learned class categories at multiple scales and adopted the use of densely connected convolutional layers to reduce overfitting. 
+    
+This repo contains a method similar to Modasshir by incoporating multiple verisions of the same image patch at various scales, but does so by modifying the image instead of creating a custom CNN architecture. This is done through 'panneling', in which the original patch center cropped and resized multiple times and joined together to form a single patch. This allows information at various scales to be learned, while also allowing for various CNN architectures (ResNet, DenseNet, EfficientNet, etc.) to be used along with their pre-trained weights. Also included in this repo is a Keras implementation of the MDNet.
