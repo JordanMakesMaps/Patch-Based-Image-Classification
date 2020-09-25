@@ -3,7 +3,7 @@ A Keras implmentation of the MDNet, published in the 2018 paper titled, ["Multi-
 
 This custom architecture learns class categories at multiple scales and adopts the use of densely connected convolutional layers to reduce overfitting. MDNet extracts features from image-patches of different sizes in parallel, later concatenating them together to create a final descriptor for each annotated point. This technique allows for training  end-to-end, learning information at different scales without having to perform costly resizing operations on each patch as done in previous works.
 
-![](Paper_Figures/MDNet_Arch.PNG)
+![](Paper_Figures/MDNet_Figure.PNG)
 
 ## Code
 ```python
