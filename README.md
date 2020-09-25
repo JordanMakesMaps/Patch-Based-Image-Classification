@@ -23,7 +23,8 @@ panel_img = panel(img, zoom = .7)
   
  ### Results
  
- Although this method is rather simple, surprisingly it's able to acheive nearly the same results as the MDNet for all three experiments. 
+ Although this method is rather simple, surprisingly it's able to acheive nearly the same results as the MDNet for all three experiments. As seen the in examples folder, each experiment used a NASNet Mobile architecture, minimal augmentation, a learning rate with a reduced scheduler, and an initial patch size of (224 x 224).
+   
  
 | MLC Benchmark | Experiment 1  | Experiment 2 | Experiment 3 |
 | :-------------: | :-------------: | :-------------: | :-------------: |
@@ -33,13 +34,10 @@ panel_img = panel(img, zoom = .7)
 | This Repo | 0.0%* | 0.0% | 0.0% |
 
 ###### *Experiment 1 uses a 80/20 train/test split
-
-
-
-
-
-
-
+  
+  
+  
+ 
 ### References:
 * Bejibom et al. 2012, [Automated Annotation of Coral Reef Survey Images](https://www.researchgate.net/publication/261494296_Automated_Annotation_of_Coral_Reef_Survey_Images) 
 * Mahmood et al. 2016, [Coral Classification with Hybrid Feature Representations](https://homepages.inf.ed.ac.uk/rbf/PAPERS/icip16.pdf)  
