@@ -10,13 +10,13 @@ This repo contains a method similar to Modasshir's, which incoporates multiple v
 
 ### Code
 ```python
-
 import skimage
+from panel_image import*
 
 img = skimage.io.imread("lena.jpg")
 
 img = skimage.transform.resize(img, (112, 112), anti_aliasing = True)
-panel_img = panel(img, zoom = .7) 
+panel_img = panel(img, output_shape = (224, 224), zoom = .7) 
 ```
 
 ![](Paper_Figures/Panel_Example.png)
