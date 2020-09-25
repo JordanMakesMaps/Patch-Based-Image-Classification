@@ -30,6 +30,18 @@ def dense_block(input_, num_layers, num_filters, dropout_rate):
 
 
 def build_MDNet(num_classes, img_dim, num_pipelines, num_blocks, num_layers, num_filters, dropout_rate, decrease_by):
+   '''
+   MDNet parameters as stated in the paper:
+   num_classes = 9,
+   img_dim = (112, 112, 3),
+   num_pipelines = 4,
+   num_blocks = 4,
+   num_layers = 5,
+   num_filters = 8 (?),
+   dropout_rate = .5,
+   decrease_by = .25
+   '''
+   
     
     assert img_dim[0] == img_dim[1]
     assert num_pipelines > 1
