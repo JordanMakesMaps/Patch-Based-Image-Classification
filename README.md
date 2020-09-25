@@ -4,6 +4,19 @@ In 2012, Beijbom et al. published the MLC dataset to serve as the first large-sc
     
 In 2015, Mahmood et al. surpassed the results published in Beijbom et al. 2012 by using features extracted from the VGGNet using only the pre-trained weights learned from the ImageNet dataset. They incorporated information at multiple scales by using what they termed the ‘Local-Spatial Pyramid Pooling’ technique, which extracted multiple patches of different sizes all centered on the same annotated point, later combining them into a single feature descriptor using a max pooling operation. 
     
-The current state-of-the-art for patch-based image classification was created in 2018 by Modasshir et al. They used a custom CNN called the Multipatch Dense Network (MDNet), which learned class categories at multiple scales and adopted the use of densely connected convolutional layers to reduce overfitting. 
+The current state-of-the-art for patch-based image classification was created in 2018 by Modasshir et al. They used a custom CNN called the Multipatch Dense Network (MDNet), which learned class categories at multiple scales and adopted the use of densely connected convolutional layers to reduce overfitting.
     
-This repo contains a method similar to Modasshir by incoporating multiple verisions of the same image patch at various scales, but does so by modifying the image instead of creating a custom CNN architecture. This is done through 'panneling', in which the original patch center cropped and resized multiple times and joined together to form a single patch. This allows information at various scales to be learned, while also allowing for various CNN architectures (ResNet, DenseNet, EfficientNet, etc.) to be used along with their pre-trained weights. Also included in this repo is a Keras implementation of the MDNet.
+This repo contains a method similar to Modasshir's, which incoporates multiple verisions of the same image patch at various scales. However, is done through 'panneling', in which the original patch is continuously center-cropped and resized, later joined together to form a single patch. By modifying the image instead of creating a custom CNN architecture, this method allows for information at various scales to be learned, while also allowing for various CNN architectures (ResNet, DenseNet, EfficientNet, etc.) to be used along with their pre-trained weights (i.e. ImageNet, Nosiy-Student).
+
+
+| MLC Benchmark | Experiment 1  | Experiment 2 | Experiment 3 |
+| :-------------: | :-------------: | :-------------: | :-------------: |
+| Beijbom et al. 2012 | 74.3% | 67.3% | 83.1% | 
+| Mahmood et al. 2015 | 77.9% | 70.1% | 84.5% | 
+| Modasshir et al. 2018 | 83.4%* | 80.1% | 85.2% |
+| This Repo | 0.0%* | 0.0% | 0.0% |
+
+###### *Experiment 1 uses a 80/20 train/test split
+
+
+
