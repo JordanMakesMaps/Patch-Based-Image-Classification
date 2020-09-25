@@ -1,7 +1,5 @@
 import skimage
 import numpy as np 
-import cv2
-
 
 # Custom callback for reducing learning rate
 def reduceLR(epoch, lr):
