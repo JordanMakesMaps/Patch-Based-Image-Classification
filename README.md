@@ -8,10 +8,23 @@ The current state-of-the-art for patch-based image classification was created in
     
 This repo contains a method similar to Modasshir's, which incoporates multiple verisions of the same image patch at various scales. However, this is done instead through 'panneling', in which the original patch is continuously center-cropped and resized, later joined together to form a single patch. By modifying the image instead of creating a custom CNN architecture, this method allows for information at various scales to be learned, while also allowing for various CNN architectures (ResNet, DenseNet, EfficientNet, etc.) to be used along with their pre-trained weights (i.e. ImageNet, Noisy-Student).
 
+### Code
+```python
+
+import skimage
+
+img = skimage.io.imread("lena.jpg")
+
+img = skimage.transform.resize(img, (112, 112), anti_aliasing = True)
+panel_img = panel(img, zoom = .7) 
+```
 
 ![](Paper_Figures/Panel_Example.png)
   
-  
+ ### Results
+ 
+ Although this method is rather simple, surprisingly it's able to acheives nearly the same results as the MDNet for all three experiments. 
+ 
 | MLC Benchmark | Experiment 1  | Experiment 2 | Experiment 3 |
 | :-------------: | :-------------: | :-------------: | :-------------: |
 | Beijbom et al. 2012 | 74.3% | 67.3% | 83.1% | 
@@ -20,6 +33,8 @@ This repo contains a method similar to Modasshir's, which incoporates multiple v
 | This Repo | 0.0%* | 0.0% | 0.0% |
 
 ###### *Experiment 1 uses a 80/20 train/test split
+
+
 
 
 
