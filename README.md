@@ -12,7 +12,7 @@ This repo contains a method similar to Modasshir's, which incoporates multiple v
 | MLC Benchmark | Experiment 1  | Experiment 2 | Experiment 3 |
 | :-------------: | :-------------: | :-------------: | :-------------: |
 | Beijbom et al. 2012 | 74.3% | 67.3% | 83.1% | 
-| Mahmood et al. 2015 | 77.9% | 70.1% | 84.5% | 
+| Mahmood et al. 2016 | 77.9% | 70.1% | 84.5% | 
 | Modasshir et al. 2018 | 83.4%* | 80.1% | 85.2% |
 | This Repo | 0.0%* | 0.0% | 0.0% |
 
@@ -20,3 +20,9 @@ This repo contains a method similar to Modasshir's, which incoporates multiple v
 
 
 
+
+
+### References:
+Bejibom et al. 2012, [Automated Annotation of Coral Reef Survey Images](https://www.researchgate.net/publication/261494296_Automated_Annotation_of_Coral_Reef_Survey_Images)
+Mahmood et al. 2016, [Coral Classification with Hybrid Feature Representations](https://homepages.inf.ed.ac.uk/rbf/PAPERS/icip16.pdf)
+Modasshir et al. 2018, [MDNet: Multi-Patch Dense Network for Coral Classification](https://afrl.cse.sc.edu/afrl/publications/public_html/papers/ModasshirOceans2018.pdf)
