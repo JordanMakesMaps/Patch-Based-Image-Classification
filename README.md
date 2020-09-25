@@ -11,12 +11,13 @@ from MDNet import *
 
 n_classes = 9
 
-model = create_MDNet(nb_classes = n_classes, 
-                     img_dim = (112, 112, 3), 
-                     num_layers = 5,
-                     nb_block = 3, 
-                     nb_pipelines = 4, 
-                     decrease_by = .25)
+model = build_MDNet(9, (112, 112, 3),
+                    num_pipelines = 4,
+                    num_blocks = 3,
+                    num_layers = 5, 
+                    num_filters = 12,
+                    dropout_rate = .75,
+                    decrease_by = .25)
                      
 model.compile()
 
