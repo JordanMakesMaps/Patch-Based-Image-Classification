@@ -23,7 +23,7 @@ panel_img = panel(img, zoom = .7)
   
  ### Results
  
- Although this method is rather simple, surprisingly it's able to acheives nearly the same results as the MDNet for all three experiments. 
+ Although this method is rather simple, surprisingly it's able to acheive nearly the same results as the MDNet for all three experiments. 
  
 | MLC Benchmark | Experiment 1  | Experiment 2 | Experiment 3 |
 | :-------------: | :-------------: | :-------------: | :-------------: |
