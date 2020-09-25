@@ -6,7 +6,7 @@ In 2015, Mahmood et al. surpassed the results published in Beijbom et al. 2012 b
     
 The current state-of-the-art for patch-based image classification was created in 2018 by Modasshir et al. They used a custom CNN called the Multipatch Dense Network (MDNet), which learned class categories at multiple scales and adopted the use of densely connected convolutional layers to reduce overfitting.
     
-This repo contains a method similar to Modasshir's, which incoporates multiple verisions of the same image patch at various scales. However, this is done instead through 'panneling', in which the original patch is continuously center-cropped and resized, later joined together to form a single patch. By modifying the image instead of creating a custom CNN architecture, this method allows for information at various scales to be learned, while also allowing for various CNN architectures (ResNet, DenseNet, EfficientNet, etc.) to be used along with their pre-trained weights (i.e. ImageNet, Nosiy-Student).
+This repo contains a method similar to Modasshir's, which incoporates multiple verisions of the same image patch at various scales. However, this is done instead through 'panneling', in which the original patch is continuously center-cropped and resized, later joined together to form a single patch. By modifying the image instead of creating a custom CNN architecture, this method allows for information at various scales to be learned, while also allowing for various CNN architectures (ResNet, DenseNet, EfficientNet, etc.) to be used along with their pre-trained weights (i.e. ImageNet, Noisy-Student).
   
   
 | MLC Benchmark | Experiment 1  | Experiment 2 | Experiment 3 |
