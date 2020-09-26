@@ -23,7 +23,7 @@ panel_img = panel(img, output_shape = (224, 224), zoom = .7)
   
  ### Results
  
- Although this method is rather simple, surprisingly it's able to acheive nearly the same results as the MDNet for all three experiments. As seen the in examples folder, each experiment used a EfficientNet-b0, minimal augmentation, a learning rate with a reduced scheduler, and an initial patch size of (224 x 224).
+ Although this method is rather simple, surprisingly it's able to acheive nearly the same results as the MDNet for all three experiments. As seen in the examples folder, each experiment used a EfficientNet-b0, minimal augmentation, a learning rate with a reduced scheduler, and an initial patch size of (224 x 224).
    
  
 | MLC Benchmark | Experiment 1  | Experiment 2 | Experiment 3 |
