@@ -4,11 +4,11 @@ In 2012, Beijbom et al. published the MLC dataset to serve as the first large-sc
     
 In 2015, Mahmood et al. surpassed the results published in Beijbom et al. 2012 by using features extracted from the VGGNet using only the pre-trained weights learned from the ImageNet dataset. They incorporated information at multiple scales by using what they termed the ‘Local-Spatial Pyramid Pooling’ technique, which extracted multiple patches of different sizes all centered on the same annotated point, later combining them into a single feature descriptor using a max pooling operation. 
     
-The current state-of-the-art for patch-based image classification was created in 2018 by Modasshir et al. They used a custom CNN called the Multipatch Dense Network (MDNet), which learned class categories at multiple scales and adopted the use of densely connected convolutional layers to reduce overfitting.
+The current state-of-the-art for patch-based image classification was created in 2018 by Modasshir et al. They used a custom CNN called the Multipatch Dense Network (MDNet), which learned class categories at multiple scales and adopted the use of densely connected convolutional layers to reduce overfitting (see figure below).
 
 ![](Paper_Figures/MDNet_Figure.png)
     
-This repo contains a method similar to Modasshir's, which incoporates multiple verisions of the same image patch at various scales. However, instead this is done through 'panneling', in which the original patch is continuously center-cropped and resized, later joined together to form a single patch (see Lena below). And by modifying the image patch instead of creating a custom CNN architecture, various other CNN architectures (ResNet, DenseNet, EfficientNet, etc.) can be used along with their pre-trained weights (i.e. ImageNet, Noisy-Student).
+This repo proposes a method similar to Modasshir's that incoporates multiple verisions of the same image patch at various scales. However, this is done through 'panneling', in which the original patch is continuously center-cropped and resized, later joined together to form a single patch (see Lena below). By modifying the image patch instead of creating a custom CNN architecture, various other CNN architectures (ResNet, DenseNet, EfficientNet, etc.) can be used along with their pre-trained weights (i.e. ImageNet, Noisy-Student).
 
 ### Code
 ```python
