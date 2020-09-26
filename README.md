@@ -31,7 +31,7 @@ panel_img = panel(img, output_shape = (224, 224), zoom = .7)
 | Beijbom et al. 2012 | 74.3% | 67.3% | 83.1% | 
 | Mahmood et al. 2016 | 77.9% | 70.1% | 84.5% | 
 | Modasshir et al. 2018 | 83.4%* | 80.1% | 85.2% |
-| This Repo | 0.0%* | 0.0% | 0.0% |
+| This Repo | 84.4%* | 0.0% | 0.0% |
 
 ###### *Experiment 1 uses a 80/20 train/test split
   
