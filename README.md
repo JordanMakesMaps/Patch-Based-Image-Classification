@@ -13,7 +13,7 @@ This repo proposes a method similar to Modasshir's that incoporates multiple ver
 ### Code
 ```python
 import skimage
-from panel_image import*
+from panel_image import *
 
 img = skimage.io.imread("lena.jpg")
 
