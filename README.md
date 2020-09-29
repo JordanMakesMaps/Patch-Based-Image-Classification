@@ -29,7 +29,6 @@ model = create_MDNet(  num_classes = 9,
                        num_filters = 8,
                        dropout_rate = .5,
                        decrease_by = .25)
-   '''
 ```
 
 ![](Paper_Figures/MDNet_Figure.png)
