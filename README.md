@@ -24,7 +24,7 @@ from mdnet import *
 model = create_MDNet()
 ```
 
-![](Paper_Figures/Panel_Example.png)
+![](Paper_Figures/MDNet_Figure.png)
   
   
  
