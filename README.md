@@ -19,9 +19,17 @@ The current state-of-the-art for patch-based image classification was created in
 
 ### Code
 ```python
-from mdnet import *
+from MDNet import * 
 
-model = create_MDNet()
+model = create_MDNet(  num_classes = 9,
+                       img_dim = (112, 112, 3),
+                       num_pipelines = 4,
+                       num_blocks = 4,
+                       num_layers = 5,
+                       num_filters = 8,
+                       dropout_rate = .5,
+                       decrease_by = .25)
+   '''
 ```
 
 ![](Paper_Figures/MDNet_Figure.png)
